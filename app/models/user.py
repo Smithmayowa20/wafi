@@ -117,12 +117,3 @@ class Profile(models.Model):
 
     def __unicode__(self):
         return '%s' % (self.first_name)
-
-    @property
-    def send_money(self):
-
-    @property
-    def withdraw_money(self):
-
-    @property
-    def add_money(self):
