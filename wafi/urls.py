@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import url
+from django.conf.urls import url, include
 from registration.backends.simple.views import RegistrationView
 from registration.forms import RegistrationFormUniqueEmail
 from app.forms import MyRegForm
@@ -28,10 +28,10 @@ class MyRegistrationView(RegistrationView):
         return ('add_money')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('add_money/', views.add_money, name="add_money"),
-    path('send_money/', views.send_money, name="send_money"),
-    path('withdraw_money/', views.withdraw_money, name="withdraw_money"),
+    url('admin/', admin.site.urls),
+    url('add_money/', views.add_money, name="add_money"),
+    url('send_money/', views.send_money, name="send_money"),
+    url('withdraw_money/', views.withdraw_money, name="withdraw_money"),
 ]
 
 urlpatterns = urlpatterns + [
