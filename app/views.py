@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 from app.models import ( 
 	MyUser, Transaction,
+    Profile,
 )
 
 from app.decorators import (
@@ -96,5 +97,41 @@ def withdraw_money(request):
 
         response_data['status'] = True
         response_data['message'] = 'Transaction Created Successfully'
+
+    return JsonResponse(response_data)
+
+
+@login_required
+def check_balance(request):
+    response_data = {}
+
+    profile = Profile.objects.get(user=request.user)
+    balance = profile.balance
+
+    response_data['balance'] = balance
+
+    return JsonResponse(response_data)
+
+
+
+@login_required
+def create_profile(request):
+    response_data = {}
+
+    profile = Profile.objects.create(
+        first_name = first_name,
+        last_name = last_name,
+        middle_name = middle_name,
+        bank_name = bank_name,
+        account_number = account_number,
+        account_name = account_name,
+        phone_number = phone_number,
+        home_address = home_address,
+        country = country,
+        user=request.user,
+    )
+
+    response_data['status'] = True
+    response_data['message'] = 'User Profile Created Successully'
 
     return JsonResponse(response_data)
