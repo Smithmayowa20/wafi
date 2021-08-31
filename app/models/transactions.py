@@ -17,6 +17,8 @@ from decouple import config
 
 from datetime import datetime, timedelta
 
+from .user import Profile
+
 
 class Transaction(models.Model):
     ADD = 'ADD'
@@ -49,15 +51,13 @@ class Transaction(models.Model):
         return '%s' % (self.transaction_uuid)
 
 
-    @property
     def update_sender_balance(self, sender, amount):
         sender_profile = Profile.objects.get(user=sender)
-        sender_profile.balance += int(sender_profile.balance) - int(amount)
+        sender_profile.balance = int(sender_profile.balance) - int(amount)
         sender_profile.save()
 
 
-    @property
     def update_recipient_balance(self, recipient, amount):
         recipient_profile = Profile.objects.get(user=recipient)
-        recipient_profile.balance += int(recipient_profile.balance) + int(amount)
+        recipient_profile.balance = int(recipient_profile.balance) + int(amount)
         recipient_profile.save()
