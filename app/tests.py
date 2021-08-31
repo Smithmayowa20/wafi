@@ -6,15 +6,20 @@ from django.contrib.auth import get_user_model
 USER_MODEL = get_user_model()
 
 
-class TestTransactionModel(TestCase):
+class TestTransactionModelAndView(TestCase):
     """
     Things to test:
-    - Create all transaction types
-    - Does the __unicode__ method behave as expected?
+    - Test all transaction types
+	- Test login_required view decorator
     """
 
     @classmethod
     def setUpUserData(cls):
+	    cls.client = Client()
+        cls.url_1 = reverse('add_money')
+        cls.url_2 = reverse('send_money')
+        cls.url_3 = reverse('withdraw_money')
+
         cls.user = USER_MODEL.objects.create_user(
             email='janedoe@test.com',
             first_name='Jane',
@@ -81,55 +86,16 @@ class TestTransactionModel(TestCase):
         self.assertEqual(self.wth_transaction_type.transaction_type, 'WTH')
         self.assertEqual(self.transaction.recipient, self.user)
 
+    
+    def test_user_must_be_logged_in(self):
+        """ Tests that a non-logged in user is redirected """
 
+        response_1 = self.client.get(self.url_1)
+        self.assertEqual(response_1.status_code, 302)
 
-class TestTransactionView(TestCase):
-    """
-    Things to test:
-    - Test all transaction views
-    - Test all view decorators
-    """
+        response_2 = self.client.get(self.url_2)
+        self.assertEqual(response_2.status_code, 302)
 
-    @classmethod
-    def setUpUserData(cls):
-        cls.client = Client()
-        cls.url_1 = reverse('add_money')
-        cls.url_2 = reverse('send_money')
-        cls.url_3 = reverse('withdraw_money')
-
-        cls.user = USER_MODEL.objects.create_user(
-            email='janedoe@test.com',
-            first_name='Jane',
-            last_name='Doe',
-            password='password456'
-        )
-        cls.profile = Profile.objects.create(
-            first_name='Jane',
-            last_name='Doe',
-            user=cls.user,
-		)
-
-        cls.user_2 = USER_MODEL.objects.create_user(
-            email='janedoe@test.com',
-            first_name='Jane',
-            last_name='Doe',
-            password='password456'
-        )
-        cls.profile_2 = Profile.objects.create(
-            first_name='Jane',
-            last_name='Doe',
-            user=cls.user_2,
-		)
-
-        def test_user_must_be_logged_in(self):
-            """ Tests that a non-logged in user is redirected """
-
-            response_1 = self.client.get(self.url_1)
-            self.assertEqual(response_1.status_code, 302)
-
-            response_2 = self.client.get(self.url_2)
-            self.assertEqual(response_2.status_code, 302)
-
-            response_3 = self.client.get(self.url_3)
-            self.assertEqual(response_3.status_code, 302)
+        response_3 = self.client.get(self.url_3)
+        self.assertEqual(response_3.status_code, 302)
 
