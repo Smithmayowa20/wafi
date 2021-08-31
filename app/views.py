@@ -24,14 +24,14 @@ from decouple import config
 @has_enough_balance
 def send_money(request):
     response_data = {}
-	recipient_email = request.GET.get('recipient_email',None)
+    recipient_email = request.GET.get('recipient_email',None)
 
     try:
         recipient_user = MyUser.objects.get(email=recipient_email)
 
     except MyUser.DoesNotExist:
         response_data['status'] = False
-	    response_data['message'] = 'Recipient User Does Not Exist'
+        response_data['message'] = 'Recipient User Does Not Exist'
         return JsonResponse(response_data)
 
     uuid = request.GET.get('uuid', None)
@@ -49,7 +49,7 @@ def send_money(request):
         transaction.update_reciever_balance(recipient_user,amount)
 
         response_data['status'] = True
-		response_data['message'] = 'Transaction Created Successfully'
+        response_data['message'] = 'Transaction Created Successfully'
 
     return JsonResponse(response_data)
 
@@ -71,7 +71,7 @@ def add_money(request):
         transaction.update_reciever_balance(request.user,amount)
 
         response_data['status'] = True
-		response_data['message'] = 'Transaction Created Successfully'
+        response_data['message'] = 'Transaction Created Successfully'
 
     return JsonResponse(response_data)
 
@@ -94,6 +94,6 @@ def withdraw_money(request):
         transaction.update_sender_balance(request.user,amount)
 
         response_data['status'] = True
-		response_data['message'] = 'Transaction Created Successfully'
+        response_data['message'] = 'Transaction Created Successfully'
 
     return JsonResponse(response_data)

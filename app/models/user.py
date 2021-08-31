@@ -17,7 +17,6 @@ from app.managers import UserManager
 
 from decouple import config
 
-import requests
 from datetime import datetime, timedelta
 
 
