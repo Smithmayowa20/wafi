@@ -127,8 +127,8 @@ class TestTransactionModelAndView(TestCase):
         self.assertEqual(response_3.status_code, 302)
 
 
-    def test_get_request(self):
-        """ Tests that a logged in user gets a 200 status code"""
+    def test_all_transaction_views(self):
+        """ Tests all transaction types with a logged in user and make sure they  get a 200 status code on all such views"""
 
         self.client.force_login(self.user)
 
