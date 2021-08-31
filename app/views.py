@@ -60,15 +60,16 @@ def add_money(request):
 
     uuid = request.GET.get('uuid', None)
     amount = request.GET.get('amount', None)
+    recipient = request.user
 
     if uuid:
         transaction = Transaction.objects.create(
-            recipient = request.user,
+            recipient = recipient,
             transaction_type = 'ADD',
             transaction_uuid = uuid,
 	    )
 
-        transaction.update_reciever_balance(request.user,amount)
+        transaction.update_recipient_balance(recipient, amount)
 
         response_data['status'] = True
         response_data['message'] = 'Transaction Created Successfully'
