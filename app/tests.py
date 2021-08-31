@@ -13,7 +13,10 @@ USER_MODEL = get_user_model()
 class TestTransactionModelAndView(TestCase):
     """
     Things to test:
-    - Test all transaction types
+    - Test create user and profile model object creation
+    - Test all transaction types model object creation
+	- Test all transaction types views
+    - Test check_balance view
 	- Test login_required view decorator
     """
 
@@ -23,6 +26,7 @@ class TestTransactionModelAndView(TestCase):
         cls.url_1 = reverse('add_money')
         cls.url_2 = reverse('send_money')
         cls.url_3 = reverse('withdraw_money')
+        cls.url_4 = reverse('check_balance')
 
         cls.user = USER_MODEL.objects.create_user(
             email='johndoe@test.com',
@@ -149,3 +153,13 @@ class TestTransactionModelAndView(TestCase):
         json_response_3 = json.loads(response_3.content)
         self.assertEqual(json_response_3['status'], True)
         self.assertEqual(json_response_3['message'], 'Transaction Created Successfully')
+
+    def test_check_balance_view(self):
+        """ Tests profile check balance view"""
+
+        self.client.force_login(self.user_2)
+
+        response = self.client.get(self.url_4)
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.content)
+        self.assertEqual(json_response['balance'], '70000')
