@@ -10,8 +10,7 @@ from app.models import (
 )
 
 from app.decorators import (
-    login_required, has_enough_balance,
-    can_perform_transaction,
+    has_enough_balance,
 )
 
 from django.http import HttpResponse, JsonResponse
@@ -23,7 +22,6 @@ from decouple import config
 
 @login_required
 @has_enough_balance
-@can_perform_transaction
 def send_money(request):
     response_data = {}
 	recipient_email = request.GET.get('recipient_email',None)
@@ -80,7 +78,6 @@ def add_money(request):
 
 @login_required
 @has_enough_balance
-@can_perform_transaction
 def withdraw_money(request):
     response_data = {}
 

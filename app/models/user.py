@@ -112,7 +112,7 @@ class Profile(models.Model):
     phone_number = models.CharField(_('phone number'), max_length=100, null=True, blank=True)
     home_address = models.TextField(_('home address'), null=True, blank=True)
     country = models.CharField(_('country'), max_length=100, null=True, blank=True)
-    balance = models.CharField(_('balance'), max_length=400, null=True, blank=True)
+    balance = models.CharField(_('balance'), max_length=400, default=0,)
     user = models.OneToOneField('MyUser', on_delete=models.CASCADE,)
 
     def __unicode__(self):
