@@ -46,7 +46,7 @@ def send_money(request):
 	    )
 
         transaction.update_sender_balance(request.user,amount)
-        transaction.update_reciever_balance(recipient_user,amount)
+        transaction.update_recipient_balance(recipient_user,amount)
 
         response_data['status'] = True
         response_data['message'] = 'Transaction Created Successfully'
