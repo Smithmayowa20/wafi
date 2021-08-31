@@ -15,7 +15,6 @@ from datetime import date
 
 from decouple import config
 
-import requests
 from datetime import datetime, timedelta
 
 
@@ -38,11 +37,11 @@ class Transaction(models.Model):
         (NAIRA, 'Naira'),
     )
 
-    sender = models.ForeignKey('MyUser', on_delete=models.CASCADE, null=True, blank=True)
-    recipient = models.ForeignKey('MyUser', on_delete=models.CASCADE, null=True, blank=True)
+    sender = models.ForeignKey('MyUser', on_delete=models.CASCADE, related_name='sender', null=True, blank=True)
+    recipient = models.ForeignKey('MyUser', on_delete=models.CASCADE, related_name='recipient', null=True, blank=True)
     amount = models.CharField(_('transaction amount'), max_length=100,)
     transaction_type = models.CharField(max_length=3, choices=TRANSACTION_CHOICES, default=ADD, db_index=True)
-    currency_type = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default=USD, db_index=True)
+    currency_type = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default=DOLLARS, db_index=True)
     transaction_uuid = models.CharField(_('transaction uuid'),max_length=400, unique=True)
     created_date = models.DateTimeField(default=timezone.now, blank=True)
 
