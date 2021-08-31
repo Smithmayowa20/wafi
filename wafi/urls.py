@@ -32,6 +32,8 @@ urlpatterns = [
     url('add_money/', views.add_money, name="add_money"),
     url('send_money/', views.send_money, name="send_money"),
     url('withdraw_money/', views.withdraw_money, name="withdraw_money"),
+    url('check_balance/', views.check_balance, name="check_balance"),
+    url('create_profile/', views.create_profile, name="create_profile"),
 ]
 
 urlpatterns = urlpatterns + [
