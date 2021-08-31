@@ -25,7 +25,7 @@ class MyRegistrationView(RegistrationView):
     def get_success_url(self, user):
         # the named URL that we want to redirect to after
         # successful registration
-        return ('home')
+        return ('add_money')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
