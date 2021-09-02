@@ -18,7 +18,7 @@ def has_enough_balance(function):
         amount = request.GET.get('amount', None)
         transaction_currency = request.GET.get('currency', None)
 
-        profile_default_balance = int(profile.balance)
+        profile_default_balance = float(profile.balance)
         default_currency = profile.default_currency
 
         transaction_value = currency_conversion(transaction_currency, default_currency, amount)
