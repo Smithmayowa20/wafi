@@ -159,6 +159,7 @@ def create_profile(request):
     country = request.POST.get('country', None)
     balance = request.POST.get('balance', None)
     default_currency = request.POST.get('default_currency', None)
+
 	
     profile = Profile.objects.create(
         first_name = first_name,
@@ -179,6 +180,6 @@ def create_profile(request):
     response_data['balance'] = profile.balance
     response_data['default_currency'] = profile.default_currency
     response_data['status'] = True
-    response_data['message'] = 'User Profile Created Successully'
+    response_data['message'] = 'User Profile Created Successfully'
 
     return JsonResponse(response_data)
