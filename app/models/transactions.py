@@ -27,6 +27,8 @@ class Transaction(models.Model):
 
     DOLLARS = 'USD'
     NAIRA = 'NGN'
+    YUAN = 'YUA'
+    YEN = 'YEN'
 
     TRANSACTION_CHOICES = (
         (ADD, 'Add'),
@@ -37,6 +39,8 @@ class Transaction(models.Model):
     CURRENCY_CHOICES = (
         (DOLLARS, 'Dollars'),
         (NAIRA, 'Naira'),
+        (YUAN, 'Yuan'),
+        (YEN, 'Yen'),
     )
 
     sender = models.ForeignKey('MyUser', on_delete=models.CASCADE, related_name='sender', null=True, blank=True)
