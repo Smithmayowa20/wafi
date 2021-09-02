@@ -16,6 +16,7 @@ class TestProfileCreationView(TestCase):
     """
     Things to test:
     - Test create profile view
+    - Test login_required decorator
 	"""
 
     @classmethod
@@ -29,6 +30,13 @@ class TestProfileCreationView(TestCase):
             last_name='Doe',
             password='password45678'
         )
+
+    
+    def test_user_must_be_logged_in(self):
+        """ Tests that a non-logged in user is redirected """
+
+        response = self.client.get(self.create_profile)
+        self.assertEqual(response.status_code, 302)
 
     def test_create_profile_dollar_view(self):
         """ Tests create profile view with logged in user who has a USD default currency field"""
@@ -97,7 +105,7 @@ class TestCheckBalanceView(TestCase):
 		)
 
     def test_check_balance_view(self):
-        """ Tests create profile view with logged in user who has a USD default currency field"""
+        """ Tests a user's profile balance lookup"""
 
         self.client.force_login(self.user)
 
@@ -115,11 +123,7 @@ class TestCheckBalanceView(TestCase):
 class TestTransactionModelTypesCreation(TestCase):
     """
     Things to test:
-    - Test create user and profile model object creation
     - Test all transaction types model object creation
-	- Test all transaction types views
-    - Test check_balance view
-	- Test login_required view decorator
     """
 
     @classmethod
@@ -156,7 +160,7 @@ class TestTransactionModelTypesCreation(TestCase):
 
 
     def test_create_add_transaction(self):
-        """ Tests that an add transaction object has been created with this uuid, amount and transaction type"""
+        """ Tests that an add transaction object has been created with this uuid, currency_type, amount and transaction type"""
 
         add_transaction_type = Transaction.objects.create(
             recipient=self.user_1,
@@ -172,7 +176,7 @@ class TestTransactionModelTypesCreation(TestCase):
         self.assertEqual(add_transaction_type.recipient, self.user_1)
 
     def test_create_send_transaction(self):
-        """ Tests that a send transaction object has been created with this uuid, amount and transaction type"""
+        """ Tests that a send transaction object has been created with this uuid, currency_type, amount and transaction type"""
 
         send_transaction_type = Transaction.objects.create(
             sender=self.user_1,
@@ -191,7 +195,7 @@ class TestTransactionModelTypesCreation(TestCase):
         self.assertEqual(send_transaction_type.recipient, self.user_2)
 
     def test_create_wth_transaction(self):
-        """ Tests that a withdraw transaction object has been created with this uuid, amount and transaction type"""
+        """ Tests that a withdraw transaction object has been created with this uuid, currency_type, amount and transaction type"""
 
         wth_transaction_type = Transaction.objects.create(
             sender=self.user_1,
@@ -251,18 +255,6 @@ class TestTransactionViews(TestCase):
             balance='7000000.0',
             default_currency='YEN',
 		)
-
-    def test_user_must_be_logged_in(self):
-        """ Tests that a non-logged in user is redirected """
-
-        response_1 = self.client.get(self.add_money)
-        self.assertEqual(response_1.status_code, 302)
-
-        response_2 = self.client.get(self.send_money)
-        self.assertEqual(response_2.status_code, 302)
-
-        response_3 = self.client.get(self.withdraw_money)
-        self.assertEqual(response_3.status_code, 302)
 
 
     def test_add_money_transaction_view(self):
