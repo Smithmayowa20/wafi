@@ -8,10 +8,10 @@ def currency_conversion(from_curr,to_curr,amount):
         'YEN' : '109.47',
 	}
 
-    from_curr_value = int(currency_data[from_curr])
-    to_curr_value = int(currency_data[to_curr])
+    from_curr_value = float(currency_data[from_curr])
+    to_curr_value = float(currency_data[to_curr])
 
-    value = (to_curr_value/from_curr_value) * int(amount)
+    value = (to_curr_value/from_curr_value) * float(amount)
 
     return value
 
