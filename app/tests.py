@@ -232,6 +232,7 @@ class TestTransactionViews(TestCase):
         response = self.client.get(self.add_money, {'amount':'20000','currency':'USD','uuid':'Ref0954635898204'})
         self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.content)
+        self.assertEqual(json_response['recipient_balance'], '120000.0')
         self.assertEqual(json_response['status'], True)
         self.assertEqual(json_response['message'], 'Transaction Created Successfully')
 
@@ -243,6 +244,8 @@ class TestTransactionViews(TestCase):
         response = self.client.get(self.send_money, {'amount':'13000','currency':'USD','uuid':'Ref0754825376493', 'recipient_email':'sarahabigaile@test.com'})
         self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.content)
+        self.assertEqual(json_response['recipient_balance'], '8423110.0')
+        self.assertEqual(json_response['sender_balance'], '87000.0')
         self.assertEqual(json_response['status'], True)
         self.assertEqual(json_response['message'], 'Transaction Created Successfully')
 
@@ -254,5 +257,6 @@ class TestTransactionViews(TestCase):
         response = self.client.get(self.withdraw_money, {'amount':'10000','currency':'USD','uuid':'Ref0754365254894'})
         self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.content)
+        self.assertEqual(json_response['sender_balance'], '5905300.0')
         self.assertEqual(json_response['status'], True)
         self.assertEqual(json_response['message'], 'Transaction Created Successfully')
