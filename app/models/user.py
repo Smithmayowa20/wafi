@@ -102,6 +102,18 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
 class Profile(models.Model):
 
+    DOLLARS = 'USD'
+    NAIRA = 'NGN'
+    YUAN = 'YUA'
+    YEN = 'YEN'
+
+    CURRENCY_CHOICES = (
+        (DOLLARS, 'Dollars'),
+        (NAIRA, 'Naira'),
+        (YUAN, 'Yuan'),
+        (YEN, 'Yen'),
+    )
+
     first_name = models.CharField(_('first name'), max_length=400, null=True, blank=True)
     last_name = models.CharField(_('last name'), max_length=400, null=True, blank=True)
     middle_name = models.CharField(_('middle name'), max_length=400, null=True, blank=True)
@@ -112,6 +124,7 @@ class Profile(models.Model):
     home_address = models.TextField(_('home address'), null=True, blank=True)
     country = models.CharField(_('country'), max_length=100, null=True, blank=True)
     balance = models.CharField(_('balance'), max_length=400, default=0,)
+    default_currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default=DOLLARS, db_index=True)
     user = models.OneToOneField('MyUser', on_delete=models.CASCADE,)
 
     def __unicode__(self):
