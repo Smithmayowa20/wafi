@@ -38,7 +38,7 @@ class TestProfileCreationView(TestCase):
         response = self.client.post(self.create_profile, {
             'first_name':'Jake',
             'last_name':'Paul',
-            'balance':'46000',
+            'balance':'46000.0',
             'default_currency':'USD',
 		})
         self.assertEqual(response.status_code, 200)
@@ -46,7 +46,7 @@ class TestProfileCreationView(TestCase):
         self.assertEqual(json_response['status'], True)
         self.assertEqual(json_response['message'], 'User Profile Created Successfully')
         self.assertEqual(json_response['first_name'], 'Jake')
-        self.assertEqual(json_response['balance'], '46000')
+        self.assertEqual(json_response['balance'], '46000.0')
         self.assertEqual(json_response['default_currency'], 'USD')
 
     def test_create_profile_yen_view(self):
@@ -57,7 +57,7 @@ class TestProfileCreationView(TestCase):
         response = self.client.post(self.create_profile, {
             'first_name':'Fred',
             'last_name':'Sunny',
-            'balance':'38000',
+            'balance':'38000.0',
             'default_currency':'YEN',
 		})
         self.assertEqual(response.status_code, 200)
@@ -65,8 +65,49 @@ class TestProfileCreationView(TestCase):
         self.assertEqual(json_response['status'], True)
         self.assertEqual(json_response['message'], 'User Profile Created Successfully')
         self.assertEqual(json_response['first_name'], 'Fred')
-        self.assertEqual(json_response['balance'], '38000')
+        self.assertEqual(json_response['balance'], '38000.0')
         self.assertEqual(json_response['default_currency'], 'YEN')
+
+
+
+
+class TestCheckBalanceView(TestCase):
+    """
+    Things to test:
+    - Test create profile model view
+	"""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.client = Client()
+        cls.check_balance = reverse('check_balance')
+
+        cls.user = USER_MODEL.objects.create_user(
+            email='johndoe@test.com',
+            first_name='John',
+            last_name='Doe',
+            password='password45678'
+        )
+        cls.profile = Profile.objects.create(
+            first_name='Lucas',
+            last_name='Kola',
+            user=cls.user,
+            balance='2300500.0',
+            default_currency='NGN',
+		)
+
+    def test_check_balance_view(self):
+        """ Tests create profile view with logged in user who has a USD default currency field"""
+
+        self.client.force_login(self.user)
+
+        response = self.client.get(self.check_balance, {})
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.content)
+        self.assertEqual(json_response['balance'], '2300500.0')
+        self.assertEqual(json_response['default_currency'], 'NGN')
+        self.assertEqual(json_response['status'], True)
+        self.assertEqual(json_response['message'], 'User Balance Checked Successfully')
 
 
 
@@ -95,7 +136,7 @@ class TestTransactionModelTypesCreation(TestCase):
             first_name='John',
             last_name='Doe',
             user=cls.user_1,
-            balance='10000',
+            balance='10000.0',
             default_currency='USD',
 		)
 
@@ -109,7 +150,7 @@ class TestTransactionModelTypesCreation(TestCase):
             first_name='Jane',
             last_name='Doe',
             user=cls.user_2,
-            balance='70000',
+            balance='70000.0',
             default_currency='YEN',
 		)
 
@@ -119,12 +160,12 @@ class TestTransactionModelTypesCreation(TestCase):
 
         add_transaction_type = Transaction.objects.create(
             recipient=self.user_1,
-            amount='5000',
+            amount='5000.0',
             transaction_uuid='Ref472749204',
             transaction_type='ADD',
             currency_type='USD',
         )
-        self.assertEqual(add_transaction_type.amount, '5000')
+        self.assertEqual(add_transaction_type.amount, '5000.0')
         self.assertEqual(add_transaction_type.transaction_uuid, 'Ref472749204')
         self.assertEqual(add_transaction_type.transaction_type, 'ADD')
         self.assertEqual(add_transaction_type.currency_type, 'USD')
@@ -136,13 +177,13 @@ class TestTransactionModelTypesCreation(TestCase):
         send_transaction_type = Transaction.objects.create(
             sender=self.user_1,
             recipient=self.user_2,
-            amount='6000',
+            amount='6000.0',
             transaction_uuid='Ref678749204',
             transaction_type='SEN',
             currency_type='YEN',
         )
 
-        self.assertEqual(send_transaction_type.amount, '6000')
+        self.assertEqual(send_transaction_type.amount, '6000.0')
         self.assertEqual(send_transaction_type.transaction_uuid, 'Ref678749204')
         self.assertEqual(send_transaction_type.transaction_type, 'SEN')
         self.assertEqual(send_transaction_type.currency_type, 'YEN')
@@ -154,13 +195,13 @@ class TestTransactionModelTypesCreation(TestCase):
 
         wth_transaction_type = Transaction.objects.create(
             sender=self.user_1,
-            amount='7000',
+            amount='7000.0',
             transaction_uuid='Ref0977749204',
             transaction_type='WTH',
             currency_type='NGN',
         )
 
-        self.assertEqual(wth_transaction_type.amount, '7000')
+        self.assertEqual(wth_transaction_type.amount, '7000.0')
         self.assertEqual(wth_transaction_type.transaction_uuid, 'Ref0977749204')
         self.assertEqual(wth_transaction_type.transaction_type, 'WTH')
         self.assertEqual(wth_transaction_type.currency_type, 'NGN')
@@ -193,7 +234,7 @@ class TestTransactionViews(TestCase):
             first_name='John',
             last_name='Doe',
             user=cls.user_1,
-            balance='100000',
+            balance='100000.0',
             default_currency='USD',
 		)
 
@@ -207,7 +248,7 @@ class TestTransactionViews(TestCase):
             first_name='Sarah',
             last_name='Abigail',
             user=cls.user_2,
-            balance='7000000',
+            balance='7000000.0',
             default_currency='YEN',
 		)
 
@@ -229,7 +270,7 @@ class TestTransactionViews(TestCase):
 
         self.client.force_login(self.user_1)
 
-        response = self.client.get(self.add_money, {'amount':'20000','currency':'USD','uuid':'Ref0954635898204'})
+        response = self.client.get(self.add_money, {'amount':'20000.0','currency':'USD','uuid':'Ref0954635898204'})
         self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.content)
         self.assertEqual(json_response['recipient_balance'], '120000.0')
@@ -241,7 +282,7 @@ class TestTransactionViews(TestCase):
 
         self.client.force_login(self.user_1)
 
-        response = self.client.get(self.send_money, {'amount':'13000','currency':'USD','uuid':'Ref0754825376493', 'recipient_email':'sarahabigaile@test.com'})
+        response = self.client.get(self.send_money, {'amount':'13000.0','currency':'USD','uuid':'Ref0754825376493', 'recipient_email':'sarahabigaile@test.com'})
         self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.content)
         self.assertEqual(json_response['recipient_balance'], '8423110.0')
@@ -254,7 +295,7 @@ class TestTransactionViews(TestCase):
 
         self.client.force_login(self.user_2)
 
-        response = self.client.get(self.withdraw_money, {'amount':'10000','currency':'USD','uuid':'Ref0754365254894'})
+        response = self.client.get(self.withdraw_money, {'amount':'10000.0','currency':'USD','uuid':'Ref0754365254894'})
         self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.content)
         self.assertEqual(json_response['sender_balance'], '5905300.0')
