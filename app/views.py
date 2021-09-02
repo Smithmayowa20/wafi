@@ -141,8 +141,10 @@ def check_balance(request):
     balance = profile.balance
     default_currency = profile.default_currency
 
-    response_data['balance'] = balance
-    response_data['currency'] = default_currency
+    response_data['balance'] = str(balance)
+    response_data['default_currency'] = default_currency
+    response_data['status'] = True
+    response_data['message'] = 'User Balance Checked Successfully'
 
     return JsonResponse(response_data)
 
