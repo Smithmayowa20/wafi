@@ -14,6 +14,8 @@ from app.decorators import (
     has_enough_balance,
 )
 
+from app.utils.helper import currency_conversion
+
 from django.http import HttpResponse, JsonResponse
 
 from datetime import datetime, timedelta
@@ -37,6 +39,16 @@ def send_money(request):
 
     uuid = request.GET.get('uuid', None)
     amount = request.GET.get('amount', None)
+    currency = request.GET.get('currency', None)
+
+    recipient_profile = Profile.objects.get(user=recipient_user)
+    recipient_default_currency = recipient_profile.default_currency
+    recipient_transaction_value = currency_conversion(currency,recipient_default_currency,amount)
+
+    sender_profile = Profile.objects.get(user=request.user)
+    sender_default_currency = sender_profile.default_currency
+    sender_transaction_value = currency_conversion(currency,sender_default_currency,amount)
+
 
     if uuid:
         transaction = Transaction.objects.create(
@@ -44,10 +56,11 @@ def send_money(request):
             sender = request.user,
             transaction_type = 'SEN',
             transaction_uuid = uuid,
+            currency_type = currency,
 	    )
 
-        transaction.update_sender_balance(request.user,amount)
-        transaction.update_recipient_balance(recipient_user,amount)
+        transaction.update_sender_balance(request.user,sender_transaction_value)
+        transaction.update_recipient_balance(recipient_user,recipient_transaction_value)
 
         response_data['status'] = True
         response_data['message'] = 'Transaction Created Successfully'
@@ -61,16 +74,23 @@ def add_money(request):
 
     uuid = request.GET.get('uuid', None)
     amount = request.GET.get('amount', None)
+    currency = request.GET.get('currency', None)
     recipient = request.user
 
+    profile = Profile.objects.get(user=request.user)
+    default_currency = profile.default_currency
+
+    transaction_value = currency_conversion(currency,default_currency,amount)
+    
     if uuid:
         transaction = Transaction.objects.create(
             recipient = recipient,
             transaction_type = 'ADD',
             transaction_uuid = uuid,
+            currency_type = currency,
 	    )
 
-        transaction.update_recipient_balance(recipient, amount)
+        transaction.update_recipient_balance(recipient, transaction_value)
 
         response_data['status'] = True
         response_data['message'] = 'Transaction Created Successfully'
@@ -85,15 +105,23 @@ def withdraw_money(request):
 
     uuid = request.GET.get('uuid', None)
     amount = request.GET.get('amount', None)
+    currency = request.GET.get('currency', None)
+    sender = request.user
+
+    profile = Profile.objects.get(user=request.user)
+    default_currency = profile.default_currency
+
+    transaction_value = currency_conversion(currency,default_currency,amount)
 
     if uuid:
         transaction = Transaction.objects.create(
             sender = request.user,
             transaction_type = 'WTH',
             transaction_uuid = uuid,
+            currency_type = currency,
 	    )
 
-        transaction.update_sender_balance(request.user,amount)
+        transaction.update_sender_balance(sender, transaction_value)
 
         response_data['status'] = True
         response_data['message'] = 'Transaction Created Successfully'
@@ -107,8 +135,10 @@ def check_balance(request):
 
     profile = Profile.objects.get(user=request.user)
     balance = profile.balance
+    default_currency = profile.default_currency
 
     response_data['balance'] = balance
+    response_data['currency'] = default_currency
 
     return JsonResponse(response_data)
 
