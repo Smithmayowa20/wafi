@@ -148,6 +148,18 @@ def check_balance(request):
 def create_profile(request):
     response_data = {}
 
+    first_name = request.POST.get('first_name', None)
+    last_name = request.POST.get('last_name', None)
+    middle_name = request.POST.get('middle_name', None)
+    bank_name = request.POST.get('bank_name', None)
+    account_number = request.POST.get('account_number', None)
+    account_name = request.POST.get('account_name', None)
+    phone_number = request.POST.get('phone_number', None)
+    home_address = request.POST.get('home_address', None)
+    country = request.POST.get('country', None)
+    balance = request.POST.get('balance', None)
+    default_currency = request.POST.get('default_currency', None)
+	
     profile = Profile.objects.create(
         first_name = first_name,
         last_name = last_name,
@@ -158,9 +170,14 @@ def create_profile(request):
         phone_number = phone_number,
         home_address = home_address,
         country = country,
+        default_currency = default_currency,
+        balance = balance,
         user=request.user,
     )
 
+    response_data['first_name'] = profile.first_name
+    response_data['balance'] = profile.balance
+    response_data['default_currency'] = profile.default_currency
     response_data['status'] = True
     response_data['message'] = 'User Profile Created Successully'
 
