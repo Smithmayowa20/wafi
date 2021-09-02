@@ -57,13 +57,13 @@ class Transaction(models.Model):
 
     def update_sender_balance(self, sender, amount):
         sender_profile = Profile.objects.get(user=sender)
-        sender_profile.balance = int(sender_profile.balance) - float(amount)
+        sender_profile.balance = float(sender_profile.balance) - float(amount)
         sender_profile.save()
         return sender_profile.balance
 
 
     def update_recipient_balance(self, recipient, amount):
         recipient_profile = Profile.objects.get(user=recipient)
-        recipient_profile.balance = int(recipient_profile.balance) + float(amount)
+        recipient_profile.balance = float(recipient_profile.balance) + float(amount)
         recipient_profile.save()
         return recipient_profile.balance
