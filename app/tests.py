@@ -15,7 +15,7 @@ USER_MODEL = get_user_model()
 class TestProfileCreationView(TestCase):
     """
     Things to test:
-    - Test create profile model view
+    - Test create profile view
 	"""
 
     @classmethod
@@ -74,7 +74,7 @@ class TestProfileCreationView(TestCase):
 class TestCheckBalanceView(TestCase):
     """
     Things to test:
-    - Test create profile model view
+    - Test check_balance view
 	"""
 
     @classmethod
