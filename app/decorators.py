@@ -4,6 +4,7 @@ from app.models import (
     Transaction, Profile,
 )
 
+from app.utils.helper import currency_conversion
 
 def has_enough_balance(function):
     @wraps(function)
@@ -15,8 +16,14 @@ def has_enough_balance(function):
             return HttpResponseRedirect('/')
 
         amount = request.GET.get('amount', None)
+        transaction_currency = request.GET.get('currency', None)
 
-        if (int(profile.balance) >= int(amount)):
+        profile_default_balance = int(profile.balance)
+        default_currency = profile.default_currency
+
+        transaction_value = currency_conversion(transaction_currency, default_currency, amount)
+
+        if (profile_default_balance >= transaction_value):
             return function(request, *args, **kwargs)
         else:
             return HttpResponseRedirect('/')
