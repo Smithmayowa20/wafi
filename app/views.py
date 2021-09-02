@@ -59,12 +59,12 @@ def send_money(request):
             currency_type = currency,
 	    )
 
-        transaction.update_sender_balance(request.user,sender_transaction_value)
-        transaction.update_recipient_balance(recipient_user,recipient_transaction_value)
+        sender_balance = transaction.update_sender_balance(request.user,sender_transaction_value)
+        recipient_balance = transaction.update_recipient_balance(recipient_user,recipient_transaction_value)
 
         response_data['status'] = True
-        response_data['sender_balance'] = sender_profile.balance
-        response_data['recipient_balance'] = recipient_profile.balance
+        response_data['sender_balance'] = str(sender_balance)
+        response_data['recipient_balance'] = str(recipient_balance)
         response_data['message'] = 'Transaction Created Successfully'
 
     return JsonResponse(response_data)
@@ -92,10 +92,10 @@ def add_money(request):
             currency_type = currency,
 	    )
 
-        transaction.update_recipient_balance(recipient, transaction_value)
+        recipient_balance = transaction.update_recipient_balance(recipient, transaction_value)
 
         response_data['status'] = True
-        response_data['recipient_balance'] = profile.balance
+        response_data['recipient_balance'] = str(recipient_balance)
         response_data['message'] = 'Transaction Created Successfully'
 
     return JsonResponse(response_data)
@@ -124,10 +124,10 @@ def withdraw_money(request):
             currency_type = currency,
 	    )
 
-        transaction.update_sender_balance(sender, transaction_value)
+        sender_balance = transaction.update_sender_balance(sender, transaction_value)
 
         response_data['status'] = True
-        response_data['sender_balance'] = profile.balance
+        response_data['sender_balance'] = str(sender_balance)
         response_data['message'] = 'Transaction Created Successfully'
 
     return JsonResponse(response_data)
